@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+    <div id="app">
+        <input v-model="newTodo" @change="add()" placeholder="new text">
+        <p>{{newTodo}}</p>
+        <button @click="reverse()" >reverse</button>
+        <button @click="undo()" :disabled="!canUndo">undo</button>
+        <button @click="redo()" :disabled="!canRedo">redo</button>
+    </div>
+    <script>
+        
+        var app = new Vue({
+                el: '#app',
+                data() {
+                    const todos = []
+                    const history = [Object.assign([], todos)]
+                    const historyIndex = history.length - 1
+                    return {
+                    newTodo: undefined,
+                    todos: todos,
+                    history: history,
+                    historyIndex: historyIndex
+                    }
+                },
+                computed: {
+                    canUndo: function() {
+                    return this.historyIndex > 0
+                    },
+                    canRedo: function() {
+                    return this.history.length - 1 - this.historyIndex > 0
+                    },
+                },
+                methods: {
+                    reverse: function() {
+                        this.newTodo = this.newTodo.split( '' ).reverse( ).join( '' );
+                    },
+                    add: function() {
+                    if (this.newTodo) {
+                        this.todos.push(this.newTodo)
+                        this.log(this.todos)
+                    }
+                    },
+                    del: function (i) {
+                    console.log(i)
+                    this.todos.splice(i,1)
+                    this.log(this.todos)
+                    },
+                    log: function(todos) {
+                    this.historyIndex += 1
+                    this.history.splice(this.historyIndex)
+                    this.history.push(Object.assign([], todos))
+                    },
+                    undo: function() {
+                    if (this.canUndo) {
+                        this.historyIndex -= 1
+                        this.todos = this.history[this.historyIndex]
+                        this.newTodo =  this.history[this.historyIndex][this.history[this.historyIndex].length-1]
+                    }
+                    },
+                    redo: function() {
+                    if (this.canRedo) {
+                        this.historyIndex += 1
+                        this.todos = this.history[this.historyIndex]
+                        this.newTodo = this.history[this.historyIndex][this.history[this.historyIndex].length-1]
+                    }
+                    }
+                }
+                })
+    </script>
+</body>
+
+</html> 

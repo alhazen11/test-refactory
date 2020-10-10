@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+    <div id="apps">
+        <p>{{inputNumber}}</p>
+        <div v-for="value in hasil">
+          {{ value }}
+          
+        </div><br>
+        <input v-model="inputNumber">
+        <button v-on:click="buttonResult">Result</button>
+    </div>
+    <script>
+        
+        var app = new Vue({
+            el: "#apps",
+            data: {
+                inputNumber: "Ini input 2 3 5 6",
+                hasil: [],
+                calc: [],
+                no: 1
+            },
+            methods: {
+                buttonResult: function () {
+                    this.hasil = []
+                    this.no = 1
+                    this.calc = this.inputNumber.split(" ")
+                    console.log(this.calc)
+                    this.calc.sort((a, b) => {
+                        this.hasil.push(this.no+". ["+a+","+b+"]");
+                        this.no++
+                        return a - b
+                    });
+                    this.hasil.push(this.calc)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html> 
